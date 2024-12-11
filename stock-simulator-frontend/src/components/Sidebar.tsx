@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
     <div
       className={`${
         isSidebarOpen ? "w-64" : "w-16"
-      } transition-all duration-500 ease-in-out bg-gray-900 min-h-screen flex flex-col sticky top-0 left-0 shadow-lg overflow-hidden`}
+      } transition-all duration-300 ease-in-out bg-gray-900 flex flex-col sticky top-0 left-0 shadow-lg overflow-hidden`}
     >
       {/* Toggle Button */}
       <button 
@@ -36,8 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
 
       {/* Main Navigation */}
       <div className={`flex-grow mt-16 ${isSidebarOpen ? "px-6" : "px-2"} space-y-6`}>
-        <div className={`${!isSidebarOpen ? 'opacity-0 invisible' : 'opacity-100 visible'} transition-all duration-300`}>
-          <h2 className="text-xl font-bold text-white/90 mb-8">Stock Simulator</h2>
+        <div className={`${!isSidebarOpen ? 'hidden' : 'flex'} transition-all duration-300 ease-in-out`}>
+          <h2 className="text-xl font-bold text-white/90">Stock Simulator</h2>
         </div>
         
         <nav className="space-y-4">
@@ -62,17 +62,15 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
               Session History
             </span>
           </Link>
-        </nav>
-      </div>
 
       {/* Profile Section */}
-      <div className="border-t border-gray-800 p-4">
-        <div className="flex items-center space-x-3">
+      <div className="border-t border-gray-600 p-2">
+        <div className="flex items-center space-x-3 mt-2">
           {profileImageUrl ? (
             <img
               src={profileImageUrl}
               alt="Profile"
-              className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-700"
+              className="w-6 h-6 rounded-full object-cover ring-2 ring-gray-700"
             />
           ) : (
             <FontAwesomeIcon icon={faUserCircle} size="2x" className="text-gray-400" />
@@ -86,6 +84,10 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
           </span>
         </div>
       </div>
+      
+        </nav>
+      </div>
+
     </div>
   );
 };

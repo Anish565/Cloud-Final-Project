@@ -40,6 +40,7 @@ const Dashboard: React.FC = () => {
   const [newsItems, setNewsItems] = useState<News[]>([]);
   const [sessions, setSessions] = useState<Session[]>([]);
   const accessToken = sessionStorage.getItem("accessToken") || "";
+  const [tokenAvailable, setTokenAvailable] = useState(false);
   // console.log('accessToken', accessToken);
   const [selectedStock, setSelectedStock] = useState<SelectedStock>({
     symbol: "AAPL",
@@ -51,24 +52,41 @@ const Dashboard: React.FC = () => {
   // useWebSocket();
 
   useEffect(() => {
+    // Check for idToken availability
+    const checkToken = () => {
+      const token = sessionStorage.getItem("idToken");
+      if (token) {
+        setTokenAvailable(true); // Set tokenAvailable to true when the token is found
+      } else {
+        setTimeout(checkToken, 100); // Retry every 100ms
+      }
+    };
+
+    checkToken();
+  }, []);
+
+  useEffect(() => {
     const loadSessions = async () => {
       try {
-        console.log('Fetching sessions');
+        console.log("Fetching sessions");
         const user = decodeUserToken();
-        // TODO: Replace "testUser" with actual user ID from authentication
-        const fetchedSessions = await fetchSessions(user?.username || "", true);
-        console.log('Fetched sessions:', fetchedSessions);
+        if (!user?.username) {
+          throw new Error("User ID is required");
+        }
+        const fetchedSessions = await fetchSessions(user.username, true);
+        console.log("Fetched sessions:", fetchedSessions);
         setSessions(fetchedSessions);
       } catch (error) {
         console.error("Failed to load sessions:", error);
-        // Optionally show an error message to the user
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadSessions();
-  }, []);
+    if (tokenAvailable) {
+      loadSessions(); // Only load sessions when tokenAvailable is true
+    }
+  }, [tokenAvailable]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -232,50 +250,54 @@ const Dashboard: React.FC = () => {
           <div className="flex space-x-6 h-64">
             {/* Session Section */}
             <div className="flex-1 bg-gray-500/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg h-full p-4 relative overflow-y-auto">
-              {accessToken ? (  
+              {accessToken ? (
                 isLoading ? (
                   <div className="flex items-center justify-center h-full">
-                  <div className="text-gray-300">Loading sessions...</div>
-                </div>
-              ) : sessions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full">
-                  <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg mb-2 flex items-center justify-center active:scale-95 transition-all duration-100"
-                    onClick={openModal}
-                  >
-                    <FontAwesomeIcon icon={faPlus} size="lg" />
-                  </button>
-                  <p className="text-gray-300">Create a Session</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold text-gray-200">Sessions</h3>
-                    <button
-                      onClick={openModal}
-                      className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-lg transition-colors duration-200"
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </button>
+                    <div className="text-gray-300">Loading sessions...</div>
                   </div>
-                  {sessions.map((session) => (
-                    <SessionItem
-                      key={session.id}
-                      name={session.name}
-                      onDelete={() => handleDeleteSession(session.id)}
-                      sessionId={session.id}
-                    />
-                  ))}
-                </div>
-              )
+                ) : sessions.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <button
+                      className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg mb-2 flex items-center justify-center active:scale-95 transition-all duration-100"
+                      onClick={openModal}
+                    >
+                      <FontAwesomeIcon icon={faPlus} size="lg" />
+                    </button>
+                    <p className="text-gray-300">Create a Session</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-200">Sessions</h3>
+                      <button
+                        onClick={openModal}
+                        className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-lg transition-colors duration-200"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    </div>
+                    {sessions.map((session) => (
+                      <SessionItem
+                        key={session.id}
+                        name={session.name}
+                        onDelete={() => handleDeleteSession(session.id)}
+                        sessionId={session.id}
+                      />
+                    ))}
+                  </div>
+                )
               ) : (
                 <div className="flex flex-col items-center justify-center h-full">
-                  <p className="text-gray-300">Please  <a href="/login" className="text-blue-500 hover:text-blue-600">Login</a> to view sessions</p>
-                  {/* make the login in the p a link to the login page */}
+                  <p className="text-gray-300">
+                    Please{" "}
+                    <a href="/login" className="text-blue-500 hover:text-blue-600">
+                      Login
+                    </a>{" "}
+                    to view sessions
+                  </p>
                 </div>
               )}
             </div>
-
             {/* News Section - Updated styling */}
             <div className="w-1/3 bg-gray-500/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg h-full p-4 overflow-y-auto">
               <h3 className="text-gray-200 font-semibold mb-4">News</h3>

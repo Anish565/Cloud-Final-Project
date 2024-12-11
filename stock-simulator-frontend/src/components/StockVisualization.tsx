@@ -147,7 +147,7 @@ export default function StockVisualization({ selectedStock }: StockVisualization
     <div className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-4xl font-semibold">{selectedStock.name}</h2>
+        <h2 className="text-4xl font-semibold">{selectedStock.symbol}</h2>
         <div className="mt-4 flex items-baseline gap-3">
           <span className="text-4xl font-bold">
             {loading ? (
