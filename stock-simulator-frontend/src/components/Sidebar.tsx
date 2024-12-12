@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faArrowLeft, faUserCircle, faHome, faUser, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -11,8 +11,16 @@ interface SidebarProps {
 
 
 const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('sidebarOpen');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.setItem('sidebarOpen', JSON.stringify(isSidebarOpen));
+  }, [isSidebarOpen]);
+
   const handleLogout = async () => {
     sessionStorage.removeItem("idToken");
     sessionStorage.removeItem("accessToken");
@@ -22,9 +30,18 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
 
   return (
     <div
-      className={`${
-        isSidebarOpen ? "w-64" : "w-16"
-      } transition-all duration-300 ease-in-out bg-gray-900 flex flex-col sticky top-0 left-0 shadow-lg overflow-hidden`}
+      className={`
+        ${isSidebarOpen ? "w-64" : "w-16"}
+        transition-all duration-300 
+        min-h-screen 
+        ease-in-out 
+        bg-gray-900 
+        flex flex-col 
+        sticky top-0 left-0 
+        shadow-lg 
+        overflow-hidden
+        z-1000
+      `}
     >
       {/* Toggle Button */}
       <button 
@@ -36,8 +53,8 @@ const Sidebar: React.FC<SidebarProps> = ({ profileImageUrl }) => {
 
       {/* Main Navigation */}
       <div className={`flex-grow mt-16 ${isSidebarOpen ? "px-6" : "px-2"} space-y-6`}>
-        <div className={`${!isSidebarOpen ? 'hidden' : 'flex'} transition-all duration-300 ease-in-out`}>
-          <h2 className="text-xl font-bold text-white/90">Stock Simulator</h2>
+        <div className={`${!isSidebarOpen ? 'hidden' : 'flex'} transition-all duration-300`}>
+          <h2 className="text-xl font-bold text-white/90 mb-8">Stock Simulator</h2>
         </div>
         
         <nav className="space-y-4">

@@ -1,7 +1,7 @@
 {
   "region": "us-east-1",
   "credentials": {
-    "accessKeyId": "<YOUR_ACCESS_KEY_ID>",
-    "secretAccessKey": "<YOUR_SECRET_ACCESS_KEY>"
+    "accessKeyId": "<ACCESS_KEY_ID>",
+    "secretAccessKey": "<SECRET_ACCESS_KEY>"
   }
 }

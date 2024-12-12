@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 import NewsStrip from "./NewsStrip";
 
 interface LayoutProps {
@@ -9,16 +9,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, profileImageUrl }) => {
     return (
-        <div className="flex min-h-screen">
-            <Sidebar profileImageUrl={profileImageUrl}/>
-            <div className="flex-1">
-                <NewsStrip/>
-                <div className="space-y-6">
-                    {children}
-                </div>
-            </div>
+        <div className="min-h-screen">
+            <Navbar profileImageUrl={profileImageUrl}/>
+            <NewsStrip/>
+            <main className="w-full mx-auto">
+                {children}
+            </main>
         </div>
-    )
-}
+    );
+};
 
 export default Layout;
