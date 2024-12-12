@@ -1,0 +1,299 @@
+openapi: 3.0.0
+info:
+  title: Trading Application API
+  version: 1.0.0
+  description: API for a trading application with user authentication and stock operations
+
+servers:
+  - url: ${apiEndpoint}
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username: 
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                DOB:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+      responses:
+        '200':
+          description: User registered successfully
+
+  /login:
+    post:
+      summary: Log in a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in successfully
+
+  /auth/qrcode:
+    post:
+      summary: Fetch QR code for MFA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: string
+                app_name:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          description: QR code fetched successfully
+
+  /auth/code:
+    post:
+      summary: Verify MFA code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: string
+                userCode:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '200':
+          description: MFA code verified successfully
+
+  /auth/tokens:
+    post:
+      summary: Complete login with MFA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session:
+                  type: string
+                clientId:
+                  type: string
+                username:
+                  type: string
+                mfaCode:
+                  type: string
+      responses:
+        '200':
+          description: Login completed successfully
+
+  /fetch/stocks:
+    get:
+      summary: Fetch stock data
+      parameters:
+        - in: query
+          name: symbol
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: interval
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock data fetched successfully
+
+  /news/get:
+    get:
+      summary: Fetch news data
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: News data fetched successfully
+
+  /session/create:
+    post:
+      summary: Create a new session
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                startAmount:
+                  type: number
+                targetAmount:
+                  type: number
+                duration:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: Session created successfully
+
+  /session:
+    get:
+      summary: Fetch sessions
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: inProgress
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Sessions fetched successfully
+
+  /session/delete:
+    delete:
+      summary: Delete a session
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: sessionId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session deleted successfully
+
+  /session/get/info:
+    get:
+      summary: Fetch session information
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: sessionId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: sortKey
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session information fetched successfully
+
+  /trade/sell:
+    post:
+      summary: Sell a stock
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                symbol:
+                  type: string
+                quantity:
+                  type: number
+                price:
+                  type: number
+      responses:
+        '200':
+          description: Stock sold successfully
+
+  /trade/buy:
+    post:
+      summary: Buy a stock
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                symbol:
+                  type: string
+                quantity:
+                  type: number
+                price:
+                  type: number
+                current_market_vol:
+                  type: number
+      responses:
+        '200':
+          description: Stock bought successfully
+
+  /session/complete:
+    post:
+      summary: Complete a session
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sessionId:
+                  type: string
+                stockData:
+                  type: object
+      responses:
+        '200':
+          description: Session completed successfully
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
