@@ -60,6 +60,7 @@ const SellModal: React.FC<SellModalProps> = ({ stock, isOpen, onClose, stocks })
 
   const handleSell = () => {
     if (quantity > 0 && quantity <= stock.quantity && sessionId) {
+      console.log(`Selling ${quantity} shares of ${stock.symbol}`);
       sellStock(sessionId, stock.symbol, quantity, stocks[stock.symbol]?.price || 0);
       onClose();
     }

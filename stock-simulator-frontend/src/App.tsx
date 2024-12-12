@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { setupTokenRefresh } from "./utils/refreshingToken";
 import { scheduleEndOfDayCheck } from "./utils/checkDate";
 import useWebSocket from "./utils/websocketService";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -35,6 +37,18 @@ function App() {
         <Route path="/session-history" element={<ProtectedRoute><SessionHistoryPage /></ProtectedRoute>} />
         <Route path="/mfa" element={<MFA />} />
       </Routes>
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </Router>
   )
 }

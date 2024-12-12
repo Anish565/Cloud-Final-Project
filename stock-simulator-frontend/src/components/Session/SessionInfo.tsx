@@ -102,8 +102,8 @@ const SessionInfo: React.FC = () => {
   const totalStockValue = portfolioData?.portfolio.reduce((total, stock) => 
     total + (stock.quantity * stock.price || 0), 0);
 
-  const profitLoss = currentValue - totalStockValue;
-  const profitLossPercentage = totalStockValue == 0 ? 0 :((profitLoss) / totalStockValue * 100).toFixed(2);
+  const profitLoss = currentValue + portfolioData?.walletBalance - sessionInfo?.startAmount;
+  const profitLossPercentage = ((profitLoss)/sessionInfo?.startAmount * 100).toFixed(2);
 
   useEffect(() => {
     const loadSessionInfo = async () => {
@@ -217,7 +217,7 @@ const SessionInfo: React.FC = () => {
           }}
         >
           ${Math.abs(profitLoss).toLocaleString()} 
-          {profitLoss >= 0 ? (
+          {profitLoss >= 0 && currentValue !== 0 ? (
             <MdArrowDropUp size={20} color="inherit" />
           ) : (
             <MdArrowDropDown size={20} color="inherit" />

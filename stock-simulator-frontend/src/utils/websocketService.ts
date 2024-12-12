@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const SOCKET_SERVER_URL = "http://ec2-54-145-233-59.compute-1.amazonaws.com:3000"; // Backend server URL
+const SOCKET_SERVER_URL = "http://localhost:3000"; // Backend server URL
 
 export default function useWebSocket() {
   const [stocks, setStocks] = useState({}); // State to store stock data as a dictionary
