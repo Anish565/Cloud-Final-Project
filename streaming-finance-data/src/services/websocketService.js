@@ -168,13 +168,13 @@ async function streamFinanceData(io) {
                             previousClose: {N:previousClose.toString()}
                         };
                         // 
-                        // const metaCommand = new PutItemCommand({
-                        //   TableName: "websocket_data", 
-                        //   Item: params,
-                        // });
-                        // const response = await dynamodb.send(metaCommand);
+                        const metaCommand = new PutItemCommand({
+                          TableName: "websocket_data", 
+                          Item: params,
+                        });
+                        const response = await dynamodb.send(metaCommand);
                         //console.log(response);
-                        //logger.info(response);
+                        logger.debug(response);
                     } catch (error) {
                         log.error("Error inserting data into DynamoDB:", error);
                         console.error("Error inserting data into DynamoDB:", error);
