@@ -340,13 +340,16 @@ export const sellStock = async (sessionId: string, symbol: string, quantity: num
 export const buyStock = async (sessionId: string, symbol: string, quantity: number, price: number, volume: number) => {
   try {
     const userToken = sessionStorage.getItem("accessToken");
+    if (volume == 0){
+      volume = 20093482893;
+    } 
     console.log("Buying stock API Call:", { sessionId, symbol, quantity, price });
     const response = await axios.post(`${apiEndpoint}/trade/buy`, {
       sessionId,
       symbol,
       quantity,
       price,
-      current_market_vol: 20000000 // Dummy value as requested
+      current_market_vol: volume // Dummy value as requested
     },
     {
       headers: {
