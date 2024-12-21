@@ -38,7 +38,7 @@ process.on('unhandledRejection', (reason, promise) => {
 // Routes
 app.get('/api/fetched-data', fetchHistoricalDataFromYahoo);  // Fetch historical data API
 // app.get('/api/news', getNews); // GetNews
-// app.get('/api/polygon/news', getNews2pretty);
+app.get('/api/polygon/news', getNews2pretty);
 app.get('/api/trending-stocks', getTrendingStocks); // Trending stocks API
 app.get('/health', healthCheck); //healthCheck
 
